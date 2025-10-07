@@ -1,0 +1,5 @@
+student_id,name,course,cohort,graduation_date,email_address
+1234,'John Smith','Software','march','2024-03-31','j.smith@email.com'
+1235,'Ground Cinnamon','AWS','march','2024-03-31','g.cinnamon@email.com'
+1236,'Board Pen','Azure','march','2024-03-31','b.pen@email.com'
+1237,'Optimus Prime','Software','march','2024-03-31','o.prime@email.com'
