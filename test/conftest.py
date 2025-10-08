@@ -2,6 +2,8 @@ import pytest
 from moto import mock_aws
 import boto3
 import os
+import json
+
 
 @pytest.fixture(autouse=True)
 def aws_credentials():
@@ -25,4 +27,9 @@ def test_bucket(s3_client):
 
 @pytest.fixture(scope="function")
 def csv_ingestion(s3_client, test_bucket):
-    pass
+    with open('./test/test_data/test_csv.csv', 'r') as file:
+        s3_client.put_object(
+            Bucket="test_bucket",
+            Key="test_csv.csv",
+            Body=file.read()            
+        )
