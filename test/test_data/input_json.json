@@ -1,7 +1,0 @@
-{
-  "file_to_obfuscate": "s3://test_bucket/test_csv.csv",
-  "pii_fields": [
-    "name",
-    "email_address"
-  ]
-}
