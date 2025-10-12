@@ -1,13 +1,16 @@
 import boto3
 import json
+import logging
 from urllib.parse import urlparse
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 def extract(json_input):
     s3_bucket, s3_key = file_location(json_input)
     client = boto3.client("s3")
-    file_to_obfuscate = csv_extraction(client, s3_bucket, s3_key)
-
-    return file_to_obfuscate
+    file_object = file_extraction(client, s3_bucket, s3_key)
+    return file_object
 
 def file_location(json_input):
     json_input_object = json.loads(json_input)
@@ -20,11 +23,21 @@ def file_location(json_input):
 
     return s3_bucket, s3_key
 
-def csv_extraction(s3_client, s3_bucket, s3_key):
+def file_extraction(s3_client, s3_bucket, s3_key):
     try:
-        file_to_obfuscate = s3_client.get_object(
+        file_object = s3_client.get_object(
             Bucket=s3_bucket,
             Key=s3_key)
-        return file_to_obfuscate
+        logger.info("File successfully retrieved")
+        return {
+        'status': 'Success',
+        'file_object': file_object['Body']
+    }
+    
     except Exception as e:
-        return {f'Check the s3 url supplied for file_to_obfuscate: {e}'}
+        logger.error(e)
+        return {
+            'status': 'Failure',
+            'error': e,
+            'advice': 'Check the s3 url supplied for file_to_obfuscate'
+        }
