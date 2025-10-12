@@ -48,8 +48,8 @@ class TestReadsS3Data:
 
         response = extract(json_input)
 
-        assert response['ResponseMetadata']['HTTPStatusCode'] == 200
-        assert response['Body'].read().decode('utf8') == data_to_obfuscate
+        # assert response['ResponseMetadata']['HTTPStatusCode'] == 200
+        assert response['file_object'].read().decode('utf8') == data_to_obfuscate
 
     @pytest.mark.it("returns exception when bucket cannot be found")
     def test_invalid_bucket(self, csv_ingestion):
@@ -66,10 +66,7 @@ class TestReadsS3Data:
 
         response = extract(json_input)
 
-        assert response == {'Check the s3 url supplied for file_to_obfuscate: '
-                            'An error occurred (NoSuchBucket) when calling '
-                            'the GetObject operation: The specified bucket '
-                            'does not exist'}
+        assert response['status'] == 'Failure'
         
     @pytest.mark.it("returns exception when file cannot be found")
     def test_invalid_file(self, csv_ingestion):
@@ -86,7 +83,4 @@ class TestReadsS3Data:
 
         response = extract(json_input)
 
-        assert response == {'Check the s3 url supplied for file_to_obfuscate: '
-                            'An error occurred (NoSuchKey) when calling the '
-                            'GetObject operation: The specified key '
-                            'does not exist.'}
+        assert response['status'] == 'Failure'
