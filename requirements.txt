@@ -21,6 +21,8 @@ packaging==25.0
 pathspec==0.12.1
 platformdirs==4.4.0
 pluggy==1.6.0
+polars==1.34.0
+polars-runtime-32==1.34.0
 pycparser==2.23
 Pygments==2.19.2
 pytest==8.4.2
