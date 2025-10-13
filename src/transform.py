@@ -13,8 +13,8 @@ def transform(json_input, file_to_obfuscate):
             logger.error("Please specify pii fields to obfuscate")
 
     response = obfuscate(fields_to_obfuscate, file_to_obfuscate)
-    return response
 
+    return response
 
 
 def pii_fields(json_input):
