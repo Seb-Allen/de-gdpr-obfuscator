@@ -48,7 +48,6 @@ class TestReadsS3Data:
 
         response = extract(json_input)
 
-        # assert response['ResponseMetadata']['HTTPStatusCode'] == 200
         assert response['file_object'].read().decode('utf8') == data_to_obfuscate
 
     @pytest.mark.it("returns exception when bucket cannot be found")
