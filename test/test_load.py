@@ -39,4 +39,4 @@ class TestBufferData:
         clean_file = transform_response['clean_file']
         obfuscated_file_stream = load(clean_file)
         
-        assert isinstance(obfuscated_file_stream.read(), bytes)
+        assert isinstance(obfuscated_file_stream['buffer'].read(), bytes)
