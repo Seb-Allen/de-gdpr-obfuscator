@@ -54,3 +54,22 @@ class TestObfuscation:
         transform(json_input, file_to_obfuscate)
         
         assert "Please specify pii fields to obfuscate" in caplog.text
+
+    @pytest.mark.it("test error handling of pii_fields function")
+    def test_pii_fields_key_error(self, csv_ingestion, caplog):
+        json_input = {
+            "file_to_obfuscate": "s3://test_bucket/test_csv.csv",
+            "INVALID": [
+                "name",
+                "email_address"
+            ]
+                }
+        
+        json_input = json.dumps(json_input)
+
+        extract_response = extract(json_input)
+        file_to_obfuscate = extract_response['file_object']
+
+        response = transform(json_input, file_to_obfuscate)
+
+        assert 'Could not extract PII Fields' in caplog.text
