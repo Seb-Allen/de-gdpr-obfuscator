@@ -16,14 +16,15 @@ def main(json_input):
     if transform_response['status'] == 'Failure':
         print(transform_response)
         exit()
-    
-    print(transform_response['clean_file'])
 
-    load(transform_response('clean_file'))
-        
-    
+    clean_file = transform_response['clean_file']
 
-    
-    # clean_file = transform(json_input, file_to_obfuscate)
-    # load(clean_file)
-    # return response['file_object'].read().decode('utf8')
+    load_response = load(clean_file)
+
+    if load_response['status'] == 'Failure':
+        print(load_response)
+        exit()
+
+    obfuscated_file_stream = load_response['buffer']
+
+    return obfuscated_file_stream
