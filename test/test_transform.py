@@ -25,28 +25,32 @@ class TestExtractsPiiFieldsToObfuscate:
 class TestObfuscation:
     @pytest.mark.it("tests obfuscation functionality")
     def test_obfuscation(self, csv_ingestion):
-        with open('./test/test_data/test_obfuscated_csv.csv', 'r') as file:
-            test_csv = file.read()
         
         test_clean_df = pl.read_csv('./test/test_data/test_obfuscated_csv.csv')
         
         with open('./test/test_data/json_input.json', 'r') as file:
             json_input = file.read()
         
-        response = pii_fields(json_input)
-        response = extract(json_input)
-        file_to_obfuscate = response['file_object']
+        extract_response = extract(json_input)
+        file_to_obfuscate = extract_response['file_object']
 
-        response = transform(json_input, file_to_obfuscate)
-        clean_file = response["clean_file"]
+        transform_response = transform(json_input, file_to_obfuscate)
+        clean_file = transform_response["clean_file"]
 
         assert clean_file.equals(test_clean_df)
 
-    @pytest.mark.it("test that data remains unchanged when passed an empty list of fields")
-    def test_no_fields(self, csv_ingestion):
+    @pytest.mark.it("test error handling of an empty list of fields")
+    def test_no_fields(self, csv_ingestion, caplog):
         json_input = {
             "file_to_obfuscate": "s3://test_bucket/test_csv.csv",
             "pii_fields": []
                 }
         
         json_input = json.dumps(json_input)
+
+        extract_response = extract(json_input)
+        file_to_obfuscate = extract_response['file_object']
+
+        transform(json_input, file_to_obfuscate)
+        
+        assert "Please specify pii fields to obfuscate" in caplog.text
