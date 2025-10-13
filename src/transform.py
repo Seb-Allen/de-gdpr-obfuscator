@@ -26,7 +26,8 @@ def pii_fields(json_input):
         return fields_to_obfuscate
     
     except Exception as e:
-        return f'Could not extract PII Fields: {e}'
+        logger.error(f'Could not extract PII Fields, check key error: {e}')
+        return None
 
 
 
