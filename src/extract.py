@@ -9,8 +9,8 @@ logger.setLevel(logging.INFO)
 def extract(json_input):
     s3_bucket, s3_key = file_location(json_input)
     client = boto3.client("s3")
-    file_object = file_extraction(client, s3_bucket, s3_key)
-    return file_object
+    response = file_extraction(client, s3_bucket, s3_key)
+    return response
 
 def file_location(json_input):
     json_input_object = json.loads(json_input)
@@ -28,11 +28,13 @@ def file_extraction(s3_client, s3_bucket, s3_key):
         file_object = s3_client.get_object(
             Bucket=s3_bucket,
             Key=s3_key)
+        
         logger.info("File successfully retrieved")
+        
         return {
-        'status': 'Success',
-        'file_object': file_object['Body']
-    }
+            'status': 'Success',
+            'file_object': file_object['Body']
+        }
     
     except Exception as e:
         logger.error(e)
