@@ -40,7 +40,7 @@ def obfuscate(fields_to_obfuscate, file_to_obfuscate):
         
         clean_file = df.collect()
         
-        logger.info("File successfully retrieved")
+        logger.info("File successfully cleaned")
         
         return {
             'status': 'Success',
