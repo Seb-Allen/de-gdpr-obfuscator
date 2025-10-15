@@ -8,8 +8,8 @@ logger.setLevel(logging.INFO)
 
 def extract(json_input):
     s3_bucket, s3_key = file_location(json_input)
-    client = boto3.client("s3")
-    response = file_extraction(client, s3_bucket, s3_key)
+    s3_client = boto3.client("s3")
+    response = file_extraction(s3_client, s3_bucket, s3_key)
     return response
 
 def file_location(json_input):
@@ -37,9 +37,9 @@ def file_extraction(s3_client, s3_bucket, s3_key):
         }
     
     except Exception as e:
-        logger.error(e)
+        logger.error(str(e))
         return {
             'status': 'Failure',
-            'error': e,
+            'error': str(e),
             'advice': 'Check the s3 url supplied for file_to_obfuscate'
         }

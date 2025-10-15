@@ -19,8 +19,8 @@ def load(clean_file):
         }
 
     except Exception as e:
-        logger.error(f'Unable to create BytesIO buffer: {e}')
+        logger.error(f'Unable to create BytesIO buffer: {str(e)}')
         return {
             'status': 'Failure',
-            'error': e
+            'error': str(e)
         }
