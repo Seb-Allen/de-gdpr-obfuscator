@@ -11,6 +11,9 @@ def lambda_handler(event, context):
 
         obfuscated_file_stream = main(json_input)
 
+        if obfuscated_file_stream['status'] == 'Failure':
+            return obfuscated_file_stream
+
         s3_client = boto3.client("s3")
         s3_client.put_object(
             Body=obfuscated_file_stream.read().decode('utf8'),
