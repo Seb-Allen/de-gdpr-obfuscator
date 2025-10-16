@@ -20,7 +20,7 @@ It can be run from the Command Line or uploaded to AWS Lambda.
 ## App Overview
 This app maintains a clear distinction between Extraction, Transformation, and Loading, with separate scripts in the `src` directory for each. `main.py` coordinates the ETL pipeline.
 
-When deployed in Lambda, `lamda_function.py` handles the execution of the GDPR Obfuscator by invoking `main.py`. `lamda_function.py` also stores the returned obfuscated file to an S3 bucket and key of your choosing.
+When deployed in Lambda, `lamda_function.py` handles the execution of the GDPR Obfuscator by invoking `main.py`. `lamda_function.py` will also upload the obfuscated file to S3.
 
 `main.py` returns a BytesIO stream. When used with Lambda, the stream must first be read and decoded before it's uploaded to S3:
 
@@ -37,7 +37,7 @@ s3_client.put_object(
 ## Invocation
 A `.json` file must be supplied to the Obfuscator stating where the source `.csv` is kept and the PII fields to be obfuscated.
 
-A template `.json` file is located in the `utility` directory:
+A template `json_input.json` file is located in the `utility` directory:
 
 ```json
 {
@@ -55,7 +55,7 @@ Load `main.py` into the python REPL:
 ```bash
 python -i src/main.py
 ```
-Open `json_input.json`, storing it as a variable to supply as an argument to `main.py`:
+Update `json_input.json` to your source bucket and key, and specify any additional PII fields to obfuscate before storing it as a variable to supply as an argument to `main.py`:
 ```python-repl
 with open('utility/json_input.json', 'r') as file:
     json_input=file.read()
@@ -98,7 +98,7 @@ Navigate to the AWS Console in the browser, and find the Lambda service.
 
 ![alt text](img/image-1.png)
 
-Find the 'Code' tab. Upload all python scripts in the `src` directory, maintaining the directory structure. Upload `lambda_function.py` found in the `lambda` directory, ensuring it's placed at the root of the lambda function. 
+Find the Code tab. Upload all python scripts in the `src` directory, maintaining the directory structure. Upload `lambda_function.py` found in the `lambda` directory, ensuring it's placed at the root of the lambda function. 
 
 Update `DESTINATION_BUCKET` and `DESTINATION_KEY` in `lambda_function.py`. Then click 'Deploy':
 
@@ -111,10 +111,10 @@ The Obfuscator relies on the following external dependencies:
 - polars
     - reads data and performs the obfuscation
 
-These will first need to be packaged and zipped before creating a layer in Lambda. This layer is made available to the code that we deployed in the previous step.
+These will first need to be packaged and zipped before creating a layer in Lambda. This layer is made available to the code that we deployed in the previous step when invoked.
 
 #### Create Dependency Package
-To create the python dependency package, install the dependencies to a diretory called `python`. To keep things tidy, first navigate to the root of the GDPR Obfuscation tool:
+To create the python dependency package, install the dependencies to a local directory called `python`. To keep things tidy, first navigate to the root of the GDPR Obfuscation tool:
 ```bash
 cd <PROJECT LOCATION>/de-gdpr-obfuscator
 pip install --target ./python polars boto3
@@ -144,7 +144,7 @@ Select the option to Specify an ARN. Paste and verify the copied ARN, before cli
 
 ![alt text](img/image-5.png)
 ### 3. Create test event json
-On the function's page, scroll down to find the 'Test' tab to create a test event. A template is provided in the `utility` directory. Update the bucket and key fields, and save the test event.
+On the function's page, scroll down to find the Test tab to create a test event. A template is provided in the `utility` directory. Update the bucket and key fields, and save the test event.
 
 ![alt text](img/image-6.png)
 
