@@ -134,9 +134,7 @@ Create the layer, providing the S3 url of `layer.zip`:
 
 ![alt text](img/image-3.png)
 
-With the layer created, copy its ARN:
-
-![alt text](img/image-4.png)
+With the layer created, copy its ARN.
 
 Navigate back to the function and scroll to the bottom to find the Layers section. Select 'Add a layer'.
 
